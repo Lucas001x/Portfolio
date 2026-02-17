@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lucas Cesar — IA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #0b0f1a;
+      --bg-2: #0f1526;
+      --text: #e9edf6;
+      --text-strong: #f8faff;
+      --muted: #a8b3cc;
+      --accent: #38bdf8;
+      --accent-2: #22c55e;
+      --accent-3: #a855f7;
+      --accent-soft: rgba(56, 189, 248, 0.12);
+      --card: rgba(15, 21, 38, 0.78);
+      --card-strong: rgba(17, 26, 45, 0.9);
+      --border: rgba(255, 255, 255, 0.1);
+      --border-strong: rgba(255, 255, 255, 0.18);
+      --shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+      --radius: 14px;
+      --cursor-dot-size: 20px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+      background: radial-gradient(900px 600px at 70% 0%, rgba(56, 189, 248, 0.12), transparent 60%),
+        radial-gradient(700px 500px at 0% 100%, rgba(168, 85, 247, 0.12), transparent 60%),
+        var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      overflow-x: hidden;
+      text-rendering: optimizeLegibility;
+    }
+
+    .skip-link {
+      position: absolute;
+      left: -999px;
+      top: 10px;
+      background: #0a1224;
+      color: var(--text-strong);
+      padding: 0.6rem 1rem;
+      border-radius: 8px;
+      border: 1px solid var(--border-strong);
+      z-index: 20;
+    }
+
+    .skip-link:focus {
+      left: 10px;
+    }
+
+    .grid-overlay {
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+      opacity: 0.25;
+      z-index: 0;
+    }
+
+    #trail-canvas {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .cursor-dot {
+      position: fixed;
+      width: var(--cursor-dot-size);
+      height: var(--cursor-dot-size);
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(56, 189, 248, 0.95) 0%, rgba(56, 189, 248, 0.55) 35%, rgba(56, 189, 248, 0.18) 60%, transparent 76%);
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.85), 0 0 38px rgba(56, 189, 248, 0.45);
+      top: 0;
+      left: 0;
+      transform: translate(-200px, -200px);
+      pointer-events: none;
+      z-index: 2;
+      mix-blend-mode: screen;
+      will-change: transform;
+    }
+
+    .cursor-dot::after {
+      content: '';
+      position: absolute;
+      inset: -14px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(56, 189, 248, 0.35), transparent 70%);
+      filter: blur(2px);
+      opacity: 0.9;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(16px);
+      background: rgba(11, 15, 26, 0.7);
+      border-bottom: 1px solid var(--border);
+    }
+
+    nav {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 2rem;
+    }
+
+    .logo {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      color: var(--accent);
+      letter-spacing: 0.08em;
+      font-size: 0.85rem;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.82rem;
+      padding: 0.35rem 0.8rem;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      transition: all 0.3s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+      border-color: rgba(56, 189, 248, 0.4);
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.2);
+    }
+
+    .nav-links a.active {
+      color: var(--text-strong);
+      border-color: rgba(56, 189, 248, 0.55);
+      background: rgba(56, 189, 248, 0.08);
+    }
+
+    .nav-links .nav-cta {
+      color: #06101e;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      border-color: transparent;
+      font-weight: 600;
+      box-shadow: 0 10px 24px rgba(56, 189, 248, 0.28);
+    }
+
+    .nav-links .nav-cta:hover {
+      color: #06101e;
+      box-shadow: 0 16px 32px rgba(56, 189, 248, 0.35);
+    }
+
+    a:focus-visible,
+    button:focus-visible,
+    .btn:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    section {
+      position: relative;
+      z-index: 2;
+      padding: 5rem 2rem;
+      scroll-margin-top: 90px;
+    }
+
+    section + section {
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2.5rem;
+      align-items: center;
+      min-height: 80vh;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.8rem, 6vw, 4.6rem);
+      line-height: 1.05;
+      font-weight: 700;
+      color: var(--text-strong);
+    }
+
+    .hero h1 span {
+      color: var(--accent);
+    }
+
+    .hero p {
+      color: var(--muted);
+      margin-top: 1rem;
+      max-width: 520px;
+      font-size: clamp(1rem, 1.2vw, 1.1rem);
+    }
+
+    .lead {
+      font-size: clamp(1.05rem, 1.4vw, 1.2rem);
+      color: var(--text);
+    }
+
+    .value-list {
+      display: grid;
+      gap: 0.4rem;
+      margin-top: 1.2rem;
+      color: var(--text);
+      font-size: 0.95rem;
+    }
+
+    .value-item {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .value-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.6);
+      flex-shrink: 0;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.8rem;
+      flex-wrap: wrap;
+    }
+
+    .hero-metrics {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 0.8rem;
+      margin-top: 1.6rem;
+    }
+
+    .metric {
+      background: var(--card-strong);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0.8rem 1rem;
+    }
+
+    .metric-value {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-strong);
+      margin-bottom: 0.2rem;
+    }
+
+    .metric-label {
+      display: block;
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .trust-row {
+      margin-top: 1.8rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.2rem;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    .trust-item {
+      display: flex;
+      align-items: baseline;
+      gap: 0.4rem;
+      padding: 0.4rem 0.8rem;
+      border-radius: 999px;
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      background: rgba(56, 189, 248, 0.06);
+    }
+
+    .trust-value {
+      color: var(--text-strong);
+      font-weight: 600;
+    }
+
+    .btn {
+      padding: 0.65rem 1.4rem;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      border: 1px solid transparent;
+      transition: all 0.3s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #06101e;
+      box-shadow: 0 12px 30px rgba(56, 189, 248, 0.25);
+    }
+
+    .btn-secondary {
+      color: var(--text);
+      border-color: var(--border-strong);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .terminal {
+      background: var(--card);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius);
+      padding: 1.4rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.88rem;
+      color: #cfe8ff;
+      box-shadow: var(--shadow);
+    }
+
+    .terminal .line {
+      display: block;
+      margin-bottom: 0.45rem;
+      color: #b9c7e2;
+    }
+
+    .terminal .prompt {
+      color: var(--accent);
+    }
+
+    .section-title {
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--accent-3);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      margin-bottom: 0.6rem;
+    }
+
+    .section-heading {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      margin-bottom: 2rem;
+      color: var(--text-strong);
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.2rem;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 12px 26px rgba(0, 0, 0, 0.24);
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(56, 189, 248, 0.3);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+    }
+
+    .card-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.3rem 0.7rem;
+      border-radius: 999px;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      color: var(--accent);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      margin-bottom: 0.8rem;
+      background: rgba(56, 189, 248, 0.08);
+    }
+
+    .card h3 {
+      margin-bottom: 0.6rem;
+      font-size: 1.05rem;
+    }
+
+    .card p {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .stack {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin-top: 1rem;
+    }
+
+    .pill {
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      color: #c2e9ff;
+      border-radius: 999px;
+      padding: 0.2rem 0.7rem;
+      font-size: 0.72rem;
+      font-family: 'JetBrains Mono', monospace;
+      background: rgba(56, 189, 248, 0.08);
+    }
+
+    .timeline {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .timeline-item {
+      border-left: 2px solid rgba(56, 189, 248, 0.4);
+      padding: 1.2rem 1.2rem 1.2rem 1.6rem;
+      position: relative;
+      background: rgba(15, 21, 38, 0.5);
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      box-shadow: 0 14px 28px rgba(0, 0, 0, 0.22);
+      display: grid;
+      gap: 0.4rem;
+    }
+
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -6px;
+      top: 18px;
+      width: 10px;
+      height: 10px;
+      background: var(--accent);
+      border-radius: 50%;
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.6);
+    }
+
+    .timeline-item h4 {
+      font-size: 1rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .timeline-item p {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .case-result {
+      color: var(--text);
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .case-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.4rem;
+    }
+
+    .case-chip {
+      border: 1px solid rgba(34, 197, 94, 0.35);
+      color: #b8f4d2;
+      border-radius: 999px;
+      padding: 0.2rem 0.6rem;
+      font-size: 0.7rem;
+      font-family: 'JetBrains Mono', monospace;
+      background: rgba(34, 197, 94, 0.12);
+    }
+
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.2rem;
+    }
+
+    .result-card {
+      background: var(--card-strong);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.4rem;
+      display: grid;
+      gap: 0.6rem;
+      box-shadow: var(--shadow);
+    }
+
+    .result-value {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--text-strong);
+    }
+
+    .result-label {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .faq {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .faq-item {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.2rem 1.4rem;
+      box-shadow: 0 14px 28px rgba(0, 0, 0, 0.2);
+    }
+
+    .faq-item h4 {
+      color: var(--text-strong);
+      margin-bottom: 0.4rem;
+      font-size: 1rem;
+    }
+
+    .faq-item p {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .cta {
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.18), rgba(34, 197, 94, 0.12));
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      border-radius: var(--radius);
+      padding: 2rem;
+      text-align: center;
+    }
+
+    .cta p {
+      color: var(--muted);
+      margin-top: 0.8rem;
+    }
+
+    footer {
+      padding: 2rem;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.8rem;
+      border-top: 1px solid var(--border);
+    }
+
+    @media (max-width: 720px) {
+      nav { flex-direction: column; gap: 0.6rem; }
+      .hero { min-height: auto; padding-top: 2rem; }
+      .hero-actions { flex-direction: column; align-items: flex-start; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { scroll-behavior: auto; transition: none !important; }
+      #trail-canvas { display: none; }
+      .cursor-dot { opacity: 0.6; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#sobre">Pular para conteúdo</a>
+  <div class="grid-overlay"></div>
+  <canvas id="trail-canvas"></canvas>
+  <div class="cursor-dot" aria-hidden="true"></div>
+
+  <header>
+    <nav aria-label="Navegação principal">
+      <div class="logo">AI_ENGINEER</div>
+      <div class="nav-links">
+        <a href="#sobre">Sobre</a>
+        <a href="#especialidades">Especialidades</a>
+        <a href="#resultados">Resultados</a>
+        <a href="#projetos">Projetos</a>
+        <a href="#processo">Processo</a>
+        <a href="#faq">FAQ</a>
+        <a href="#contato">Contato</a>
+        <a href="#contato" class="nav-cta">Agendar conversa</a>
+      </div>
+    </nav>
+  </header>
+
+  <section id="sobre">
+    <div class="container hero">
+      <div>
+        <div class="section-title">IA &amp; Engenharia de Software</div>
+        <h1>Lucas Arruda<br /><span>IA e software</span> com impacto real</h1>
+        <p class="lead">
+          Desenvolvedor de IA e software focado em sistemas que funcionam no mundo real.
+          Entrego produtos confiáveis, escaláveis e alinhados ao ROI do negócio.
+        </p>
+        <div class="value-list">
+          <div class="value-item"><span class="value-dot"></span>LLMs e RAG com qualidade mensurada</div>
+          <div class="value-item"><span class="value-dot"></span>Backends, APIs e integrações robustas</div>
+          <div class="value-item"><span class="value-dot"></span>MLOps e software em produção com observabilidade</div>
+        </div>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#projetos">Ver projetos</a>
+          <a class="btn btn-secondary" href="#contato">Falar comigo</a>
+        </div>
+        <div class="trust-row">
+          <div class="trust-item"><span class="trust-value">+20</span> projetos entregues</div>
+          <div class="trust-item"><span class="trust-value">98%</span> satisfação técnica</div>
+          <div class="trust-item"><span class="trust-value">24h</span> resposta média</div>
+        </div>
+      </div>
+      <div class="terminal" aria-label="Exemplo técnico">
+        <span class="line"><span class="prompt">$</span> pipeline.status</span>
+        <span class="line">data_ingest → feature_store → train → eval</span>
+        <span class="line">deploy: online + batch</span>
+        <span class="line">monitor: drift + latency + cost</span>
+        <span class="line"><span class="prompt">$</span> result = impact( +32% )</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="especialidades">
+    <div class="container">
+      <div class="section-title">Especialidades</div>
+      <h2 class="section-heading">IA e software que reduzem custo e aumentam receita</h2>
+      <div class="cards">
+        <div class="card">
+          <span class="card-icon">LLM</span>
+          <h3>LLMs &amp; RAG</h3>
+          <p>Assistentes com contexto, respostas consistentes e segurança.</p>
+          <div class="stack">
+            <span class="pill">LangChain</span>
+            <span class="pill">Vector DB</span>
+            <span class="pill">Prompt Eval</span>
+          </div>
+        </div>
+        <div class="card">
+          <span class="card-icon">CV</span>
+          <h3>Visão Computacional</h3>
+          <p>Detecção, classificação e monitoramento em produção.</p>
+          <div class="stack">
+            <span class="pill">PyTorch</span>
+            <span class="pill">YOLO</span>
+            <span class="pill">OpenCV</span>
+          </div>
+        </div>
+        <div class="card">
+          <span class="card-icon">MLOPS</span>
+          <h3>MLOps</h3>
+          <p>Pipeline robusto com governança e observabilidade.</p>
+          <div class="stack">
+            <span class="pill">MLflow</span>
+            <span class="pill">Docker</span>
+            <span class="pill">Kubernetes</span>
+          </div>
+        </div>
+        <div class="card">
+          <span class="card-icon">SWE</span>
+          <h3>Engenharia de Software</h3>
+          <p>APIs, serviços e produtos escaláveis com alta disponibilidade.</p>
+          <div class="stack">
+            <span class="pill">FastAPI</span>
+            <span class="pill">PostgreSQL</span>
+            <span class="pill">Cloud</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="resultados">
+    <div class="container">
+      <div class="section-title">Resultados</div>
+      <h2 class="section-heading">Impacto que vende sua imagem</h2>
+      <div class="results-grid">
+        <div class="result-card">
+          <span class="result-value">-35%</span>
+          <span class="result-label">tempo médio de atendimento com assistente IA</span>
+        </div>
+        <div class="result-card">
+          <span class="result-value">+28%</span>
+          <span class="result-label">produtividade em processos operacionais</span>
+        </div>
+        <div class="result-card">
+          <span class="result-value">98%</span>
+          <span class="result-label">precisão em inspeção visual industrial</span>
+        </div>
+        <div class="result-card">
+          <span class="result-value">99.9%</span>
+          <span class="result-label">SLA em serviços críticos de software</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="projetos">
+    <div class="container">
+      <div class="section-title">Projetos</div>
+      <h2 class="section-heading">Cases de impacto comprovado</h2>
+      <div class="timeline">
+        <div class="timeline-item">
+          <h4>Assistente corporativo para suporte</h4>
+          <p>RAG sobre base interna com métricas de qualidade e segurança.</p>
+          <p class="case-result">Resultado: -30% no tempo de resposta</p>
+          <div class="case-meta">
+            <span class="case-chip">RAG</span>
+            <span class="case-chip">Segurança</span>
+            <span class="case-chip">SLA</span>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <h4>Inspeção visual industrial</h4>
+          <p>Detecção de defeitos com latência baixa em edge.</p>
+          <p class="case-result">Resultado: 98% de precisão operacional</p>
+          <div class="case-meta">
+            <span class="case-chip">Edge</span>
+            <span class="case-chip">Tempo real</span>
+            <span class="case-chip">Qualidade</span>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <h4>Previsão de demanda</h4>
+          <p>Modelos preditivos integrados ao planejamento logístico.</p>
+          <p class="case-result">Resultado: +18% de eficiência logística</p>
+          <div class="case-meta">
+            <span class="case-chip">Forecast</span>
+            <span class="case-chip">Sazonalidade</span>
+            <span class="case-chip">ROI</span>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <h4>Plataforma SaaS para operações</h4>
+          <p>Backoffice com APIs seguras, autenticação e painéis de gestão.</p>
+          <p class="case-result">Resultado: -40% no tempo de deploy</p>
+          <div class="case-meta">
+            <span class="case-chip">Backend</span>
+            <span class="case-chip">API</span>
+            <span class="case-chip">Observabilidade</span>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <h4>Audio AI generativa</h4>
+          <p>Síntese de voz com personalização e controle de estilo.</p>
+          <p class="case-result">Resultado: 3x mais velocidade de produção</p>
+          <div class="case-meta">
+            <span class="case-chip">Generativo</span>
+            <span class="case-chip">Personalização</span>
+            <span class="case-chip">Escala</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="processo">
+    <div class="container">
+      <div class="section-title">Processo</div>
+      <h2 class="section-heading">Processo que reduz risco</h2>
+      <div class="cards">
+        <div class="card">
+          <span class="card-icon">01</span>
+          <h3>Diagnóstico</h3>
+          <p>Entendo dados, restrições e sucesso esperado.</p>
+        </div>
+        <div class="card">
+          <span class="card-icon">02</span>
+          <h3>Prototipação</h3>
+          <p>Provas de conceito rápidas com métricas claras.</p>
+        </div>
+        <div class="card">
+          <span class="card-icon">03</span>
+          <h3>Produção</h3>
+          <p>Deploy com monitoramento, logs e melhoria contínua.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq">
+    <div class="container">
+      <div class="section-title">FAQ</div>
+      <h2 class="section-heading">Perguntas comuns antes de contratar</h2>
+      <div class="faq">
+        <div class="faq-item">
+          <h4>Quanto tempo leva para entregar?</h4>
+          <p>Depende do escopo. POCs levam 2-4 semanas; produção completa pode variar de 6-12 semanas.</p>
+        </div>
+        <div class="faq-item">
+          <h4>Como garantimos qualidade das respostas?</h4>
+          <p>Uso evals, métricas de precisão, testes de regressão e monitoramento contínuo.</p>
+        </div>
+        <div class="faq-item">
+          <h4>Você trabalha com dados sensíveis?</h4>
+          <p>Sim. Implemento segurança, isolamento, RBAC e políticas de governança.</p>
+        </div>
+        <div class="faq-item">
+          <h4>Como funciona o modelo de contratação?</h4>
+          <p>Projeto fechado com marcos ou retainer mensal para evolução contínua.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contato">
+    <div class="container">
+      <div class="cta">
+        <h2>Pronto para transformar IA em resultado?</h2>
+        <p>Agende uma conversa rápida para mapear seu caso e estimar impacto.</p>
+        <div class="hero-actions" style="justify-content: center;">
+          <a class="btn btn-primary" href="mailto:seuemail@dominio.com">Enviar e-mail</a>
+          <a class="btn btn-secondary" href="https://linkedin.com/in/seu-usuario">LinkedIn</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    &copy; 2026 Lucas Cesar de Arruda — Software Engineer com foco em resultado.
+  </footer>
+
+  <script>
+    const trailCanvas = document.getElementById('trail-canvas');
+    const trailCtx = trailCanvas ? trailCanvas.getContext('2d') : null;
+    const cursorDot = document.querySelector('.cursor-dot');
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const mouse = {
+      x: window.innerWidth * 0.5,
+      y: window.innerHeight * 0.3,
+    };
+
+    let prev = { ...mouse };
+    let dotSize = 8;
+    let W = window.innerWidth;
+    let H = window.innerHeight;
+    let DPR = Math.min(window.devicePixelRatio || 1, 2);
+
+    function resizeTrail() {
+      W = window.innerWidth;
+      H = window.innerHeight;
+      DPR = Math.min(window.devicePixelRatio || 1, 2);
+      if (trailCanvas && trailCtx) {
+        trailCanvas.width = W * DPR;
+        trailCanvas.height = H * DPR;
+        trailCanvas.style.width = `${W}px`;
+        trailCanvas.style.height = `${H}px`;
+        trailCtx.setTransform(DPR, 0, 0, DPR, 0, 0);
+        trailCtx.lineCap = 'round';
+        trailCtx.lineJoin = 'round';
+      }
+      if (cursorDot) {
+        dotSize = cursorDot.getBoundingClientRect().width || dotSize;
+      }
+    }
+
+    function moveCursor(x, y) {
+      mouse.x = x;
+      mouse.y = y;
+      if (cursorDot) {
+        cursorDot.style.transform = `translate(${x - dotSize / 2}px, ${y - dotSize / 2}px)`;
+      }
+    }
+
+    function animateTrail() {
+      if (!trailCtx || prefersReducedMotion) return;
+      requestAnimationFrame(animateTrail);
+      trailCtx.globalCompositeOperation = 'destination-out';
+      trailCtx.fillStyle = 'rgba(0, 0, 0, 0.28)';
+      trailCtx.fillRect(0, 0, W, H);
+      trailCtx.globalCompositeOperation = 'lighter';
+      trailCtx.strokeStyle = 'rgba(56, 189, 248, 0.85)';
+      trailCtx.lineWidth = 2.8;
+      trailCtx.shadowColor = 'rgba(56, 189, 248, 0.45)';
+      trailCtx.shadowBlur = 10;
+      trailCtx.beginPath();
+      trailCtx.moveTo(prev.x, prev.y);
+      trailCtx.lineTo(mouse.x, mouse.y);
+      trailCtx.stroke();
+      trailCtx.shadowBlur = 0;
+      trailCtx.globalCompositeOperation = 'source-over';
+      prev = { ...mouse };
+    }
+
+    resizeTrail();
+    moveCursor(mouse.x, mouse.y);
+    if (!prefersReducedMotion) animateTrail();
+    window.addEventListener('resize', resizeTrail);
+    window.addEventListener('mousemove', (e) => moveCursor(e.clientX, e.clientY));
+    window.addEventListener('touchmove', (e) => {
+      if (e.touches.length) moveCursor(e.touches[0].clientX, e.touches[0].clientY);
+    }, { passive: true });
+
+    const navLinks = document.querySelectorAll('.nav-links a');
+    const sections = document.querySelectorAll('section[id]');
+
+    const navObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        const id = entry.target.getAttribute('id');
+        navLinks.forEach((link) => {
+          const isActive = link.getAttribute('href') === `#${id}`;
+          link.classList.toggle('active', isActive);
+          if (isActive) {
+            link.setAttribute('aria-current', 'page');
+          } else {
+            link.removeAttribute('aria-current');
+          }
+        });
+      });
+    }, { rootMargin: '-40% 0px -55% 0px', threshold: 0.1 });
+
+    sections.forEach((section) => navObserver.observe(section));
+  </script>
+</body>
+</html>
