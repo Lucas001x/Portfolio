@@ -181,7 +181,9 @@
     h2 em { font-style: italic; color: var(--accent); }
 
     /* ---------- Hero ---------- */
-    .hero { padding-top: clamp(2rem, 4.5vw, 4rem); }
+    .hero { padding: clamp(1.5rem, 3vw, 2.5rem) 0 clamp(2.5rem, 5vw, 3.5rem); }
+
+    #servicos { padding-top: clamp(2.5rem, 5vw, 4rem); }
 
     .hero-kicker {
       font-size: 0.95rem;
@@ -310,6 +312,8 @@
 
     .service p { color: var(--ink-soft); }
 
+    .case > div > p { color: var(--ink-soft); max-width: 46em; }
+
     .service p b { color: var(--ink); font-weight: 600; }
 
     .service .for {
@@ -358,7 +362,7 @@
       font-size: 1.6rem;
       line-height: 1.2;
       letter-spacing: -0.01em;
-      margin-bottom: 1rem;
+      margin-bottom: 0.5rem;
     }
 
     .case-body {
@@ -916,52 +920,14 @@
       white-space: nowrap;
     }
 
-    /* Motivos */
-    .reasons {
-      grid-column: 2;
-      list-style: none;
-      counter-reset: motivo;
-      display: grid;
-      gap: 1.6rem;
-    }
-
-    .reasons li {
-      counter-increment: motivo;
-      display: grid;
-      grid-template-columns: 2.4rem 1fr;
-      padding-bottom: 1.6rem;
-      border-bottom: 1px solid var(--line);
-    }
-
-    .reasons li::before {
-      content: counter(motivo);
-      grid-row: span 2;
-      font-family: var(--serif);
-      font-style: italic;
-      font-size: 1.3rem;
-      line-height: 1.3;
-      color: var(--accent);
-    }
-
-    .reasons h3 {
-      font-family: var(--serif);
-      font-weight: 500;
-      font-size: 1.35rem;
-      line-height: 1.25;
-      margin-bottom: 0.3rem;
-    }
-
-    .reasons p { color: var(--ink-soft); }
-
-    .founder-kicker {
-      margin-top: 1rem;
-      font-size: 0.95rem;
-      color: var(--accent);
-      font-weight: 500;
-    }
-
     /* Fundador */
-    .founder { align-self: start; }
+    .founder {
+      grid-column: 2 / -1;
+      display: grid;
+      grid-template-columns: 220px minmax(0, 26rem);
+      gap: 2rem;
+      align-items: center;
+    }
 
     .founder .portrait-frame { max-width: 280px; }
 
@@ -997,10 +963,10 @@
       .contact-grid { grid-template-columns: 1fr; }
       .about { grid-template-columns: 1fr 1fr; }
       .about-text,
-      .reasons { grid-column: 1 / -1; }
+      .founder { grid-column: 1 / -1; }
       .tools { grid-column: 1 / -1; }
       .service { grid-template-columns: 60px 1fr; }
-      .service > div:last-child { grid-column: 2; }
+      .service > p { grid-column: 2; }
       .steps { grid-template-columns: repeat(2, 1fr); }
       .facts { grid-template-columns: 1fr; gap: 0; padding-top: 0; }
       .hero-top { grid-template-columns: 1fr; }
@@ -1013,6 +979,7 @@
       :root { --header-h: 60px; }
       .menu-toggle { display: inline-block; }
       .about { grid-template-columns: 1fr; }
+      .founder { grid-column: auto; grid-template-columns: 1fr; }
       .founder .portrait-frame { max-width: 220px; }
       .examples { grid-template-columns: 1fr; gap: 2rem; }
       .about-lists { padding-left: 0; }
@@ -1064,7 +1031,7 @@
       }
 
       .service { grid-template-columns: 1fr; gap: 0.6rem; }
-      .service > div:last-child { grid-column: auto; }
+      .service > p { grid-column: auto; }
       .case-body { grid-template-columns: 1fr; gap: 1rem; }
       .steps { grid-template-columns: 1fr; gap: 1.6rem; }
       .actions .btn { width: 100%; text-align: center; }
@@ -1088,7 +1055,7 @@
         <a href="#servicos">Serviços</a>
         <a href="#exemplos">Exemplos</a>
         <a href="#projetos">Projetos</a>
-        <a href="#sobre">Por que a Conava</a>
+        <a href="#sobre">Quem somos</a>
         <a href="#duvidas">Dúvidas</a>
         <a href="#contato" class="nav-cta">Fale conosco</a>
       </div>
@@ -1105,33 +1072,13 @@
               Sistemas sob medida para sua empresa trabalhar
               <span class="mark">menos no manual.<svg viewBox="0 0 300 20" preserveAspectRatio="none" aria-hidden="true"><path d="M3 14 C 60 5, 120 4, 180 9 S 270 15, 297 6" /></svg></span>
             </h1>
-            <p class="hero-intro">
-              Sua equipe perde horas copiando dados, respondendo as mesmas perguntas e procurando informação?
-              Nós automatizamos isso com Inteligência Artificial — você conta o problema e recebe a solução funcionando.
-            </p>
+            <p class="hero-intro">Você conta o problema. Nós entregamos a solução com IA funcionando.</p>
             <div class="actions">
               <a class="btn" href="#contato">Conte seu problema para nós</a>
-              <a class="link-arrow" href="https://wa.me/5527988966118?text=Ol%C3%A1!%20Vi%20o%20site%20da%20Conava%20e%20quero%20conversar%20sobre%20um%20projeto." target="_blank" rel="noopener noreferrer">Chamar no WhatsApp →</a>
             </div>
-            <p class="micro">Sem compromisso. Respondemos em até 24 horas úteis.</p>
+            <p class="micro">Sem compromisso. Resposta em até 24h úteis.</p>
           </div>
-
-          <aside class="hero-card" aria-labelledby="exemplo-topo">
-            <p class="hero-card-tag">Exemplo de previsão</p>
-            <h2 id="exemplo-topo">Quanto produzir amanhã?</h2>
-            <dl>
-              <div><dt>Antes</dt><dd>A produção é decidida no olho: um dia sobra e vai para o lixo, no outro falta no fim da tarde.</dd></div>
-              <div><dt>Depois</dt><dd>A IA cruza dia da semana, clima, feriados e o histórico de vendas e diz quanto fazer de cada item.</dd></div>
-            </dl>
-            <p class="gain">Menos desperdício, sem faltar produto<small>para padarias, restaurantes e cozinhas industriais</small></p>
-          </aside>
         </div>
-
-        <ul class="facts">
-          <li><strong>24h</strong> para responder o seu contato</li>
-          <li><strong>2–4</strong> semanas para ver a primeira versão funcionando</li>
-          <li><strong>5</strong> setores com projetos reais: meio ambiente, educação, escritórios, indústria e energia</li>
-        </ul>
       </div>
     </section>
 
@@ -1146,34 +1093,22 @@
           <li class="service">
             <span class="service-num">1</span>
             <h3>Atenda clientes 24h sem aumentar a equipe</h3>
-            <div>
-              <p><b>Assistentes de IA</b> que conhecem os documentos da sua empresa, respondem clientes e equipe na hora e ainda executam tarefas sozinhos.</p>
-              <p class="for"><b>Bom para</b> atendimento, suporte e rotinas administrativas.</p>
-            </div>
+            <p><b>Assistentes de IA</b> que conhecem a sua empresa e respondem na hora.</p>
           </li>
           <li class="service">
             <span class="service-num">2</span>
             <h3>Pare de copiar e colar dados</h3>
-            <div>
-              <p><b>Automação de rotinas:</b> conectamos os programas que você já usa — e-mail, planilhas, Microsoft 365 e sistemas internos — e o trabalho repetitivo passa a acontecer sozinho.</p>
-              <p class="for"><b>Bom para</b> escritório, financeiro e operações.</p>
-            </div>
+            <p><b>Automações</b> que conectam e-mail, planilhas e sistemas para o trabalho repetitivo acontecer sozinho.</p>
           </li>
           <li class="service">
             <span class="service-num">3</span>
             <h3>Decida com números, não com achismo</h3>
-            <div>
-              <p><b>Painéis e previsões</b> com os dados que a sua empresa já tem: vendas, estoque, atendimento. Você vê o que está acontecendo e o que vem pela frente.</p>
-              <p class="for"><b>Bom para</b> gestão, vendas, estoque e planejamento.</p>
-            </div>
+            <p><b>Painéis e previsões</b> com os dados que você já tem.</p>
           </li>
           <li class="service">
             <span class="service-num">4</span>
             <h3>Confira tudo sem depender só do olho humano</h3>
-            <div>
-              <p><b>Análise de imagens:</b> câmeras e fotos analisadas por IA para conferir, contar, medir e apontar problemas automaticamente.</p>
-              <p class="for"><b>Bom para</b> controle de qualidade, vistorias e segurança.</p>
-            </div>
+            <p><b>Análise de imagens</b> que confere, conta e aponta problemas automaticamente.</p>
           </li>
         </ol>
       </div>
@@ -1190,39 +1125,28 @@
           <article class="example">
             <span class="example-sector">Lojas e distribuidoras</span>
             <h3>Comprar estoque na medida certa</h3>
-            <p><b>Antes:</b> a compra é feita no feeling — sobra produto parado e falta o que mais vende.</p>
-            <p><b>Depois:</b> uma previsão de vendas por produto mostra quanto comprar e quando.</p>
+            <p>Uma previsão de vendas por produto mostra quanto comprar e quando.</p>
           </article>
           <article class="example">
-            <span class="example-sector">Empresas com muitos documentos internos</span>
+            <span class="example-sector">Equipes com muitos manuais</span>
             <h3>Respostas rápidas para a equipe</h3>
-            <p><b>Antes:</b> funcionários perdem tempo procurando procedimentos em manuais e pastas.</p>
-            <p><b>Depois:</b> perguntam em linguagem normal e o assistente responde citando o documento certo.</p>
+            <p>Pergunte em linguagem normal e receba a resposta com o documento certo.</p>
           </article>
           <article class="example">
-            <span class="example-sector">Empresas que vendem para o governo</span>
+            <span class="example-sector">Quem vende para o governo</span>
             <h3>Nenhuma licitação perdida</h3>
-            <p><b>Antes:</b> alguém passa horas por semana lendo diários oficiais e editais atrás de oportunidades.</p>
-            <p><b>Depois:</b> um agente lê tudo toda manhã e manda só o que combina com a sua empresa, com prazos e exigências.</p>
+            <p>Um agente lê os diários oficiais toda manhã e avisa só o que combina com você.</p>
           </article>
           <article class="example">
             <span class="example-sector">Locadoras e frotas</span>
             <h3>Vistoria de veículo por foto</h3>
-            <p><b>Antes:</b> a vistoria é no papel e a discussão “esse amassado já estava aí?” vira prejuízo.</p>
-            <p><b>Depois:</b> a IA compara as fotos da retirada e da devolução e marca qualquer dano novo.</p>
+            <p>A IA compara as fotos da retirada e da devolução e marca qualquer dano novo.</p>
           </article>
           <article class="example">
-            <span class="example-sector">Farmácias, laboratórios e mercados</span>
+            <span class="example-sector">Farmácias e mercados</span>
             <h3>Câmara fria que avisa antes de estragar</h3>
-            <p><b>Antes:</b> a temperatura sobe de madrugada e o problema só aparece de manhã, com produto perdido.</p>
-            <p><b>Depois:</b> sensores acompanham a temperatura 24h e a IA avisa no celular ao primeiro sinal de falha.</p>
+            <p>Sensores acompanham a temperatura e avisam no celular ao primeiro sinal de falha.</p>
           </article>
-        </div>
-        <p class="note">Exemplos ilustrativos. Cada solução é desenhada para a realidade da sua empresa.</p>
-
-        <div class="cta-inline">
-          <p>Reconheceu algum problema da sua empresa?</p>
-          <a class="btn" href="#contato">Quero algo assim</a>
         </div>
       </div>
     </section>
@@ -1237,55 +1161,32 @@
         <article class="case">
           <p class="case-year">2026<small>Meio ambiente</small></p>
           <div>
-            <h3>Previsão da qualidade da água do rio Doce <span class="status">em desenvolvimento</span></h3>
-            <div class="case-body">
-              <div><h4>O problema</h4><p>Os dados públicos dizem como o rio <em>está</em>, não como <em>vai estar</em>. Depois de uma chuva forte, quem mora rio abaixo só percebe a água turva quando ela já chegou.</p></div>
-              <div><h4>O que fizemos</h4><p>Reunimos em um só lugar quase 10 anos de medições de estações automáticas, chuva e vazão, e analisamos o rio antes e depois de Mariana. Agora construímos uma “previsão do tempo” do rio: a turbidez prevista em cada cidade, em linguagem simples, para companhias de saneamento, produtores rurais e Defesa Civil.</p></div>
-            </div>
-          </div>
-        </article>
-
-        <article class="case">
-          <p class="case-year">2026<small>Educação</small></p>
-          <div>
-            <h3>Plataforma de IA que ajuda o professor a enxergar a turma</h3>
-            <div class="case-body">
-              <div><h4>O problema</h4><p>Professores sobrecarregados não conseguem acompanhar cada aluno e nem sempre sabem quem está com dificuldade, em qual conteúdo.</p></div>
-              <div><h4>O que fizemos</h4><p>Uma plataforma que usa o material da própria escola para explicar o conteúdo do jeito de cada aluno e entrega ao professor relatórios claros de onde a turma precisa de ajuda.</p></div>
-            </div>
-          </div>
-        </article>
-
-        <article class="case">
-          <p class="case-year">2024–hoje<small>Empresas e escritórios</small></p>
-          <div>
-            <h3>Agentes de IA que executam tarefas sozinhos</h3>
-            <div class="case-body">
-              <div><h4>O problema</h4><p>Tarefas repetitivas — analisar imagens, interpretar textos, seguir fluxos de trabalho — consumiam o tempo das equipes.</p></div>
-              <div><h4>O que fizemos</h4><p>Agentes que entendem textos e imagens, consultam a base de conhecimento da empresa e executam fluxos automatizados ligados a outros sistemas.</p></div>
-            </div>
-          </div>
-        </article>
-
-        <article class="case">
-          <p class="case-year">2023–24<small>Indústria</small></p>
-          <div>
-            <h3>Câmera com IA que mede o desalinhamento de correias transportadoras</h3>
-            <div class="case-body">
-              <div><h4>O problema</h4><p>Correias desalinhadas se desgastam, podem parar a produção e exigem inspeção constante.</p></div>
-              <div><h4>O que fizemos</h4><p>Uma rede neural que mede o desalinhamento pela imagem da câmera e mostra tudo num painel de supervisão.</p></div>
-            </div>
+            <h3>Previsão da qualidade da água do rio Doce</h3>
+            <p>Uma “previsão do tempo” do rio: avisa cada cidade, com antecedência, quando a água vai ficar turva depois das chuvas.</p>
           </div>
         </article>
 
         <article class="case">
           <p class="case-year">2024<small>Energia</small></p>
           <div>
-            <h3>Monitoramento de energias renováveis</h3>
-            <div class="case-body">
-              <div><h4>O problema</h4><p>Dados de geração e consumo de energia espalhados e difíceis de interpretar.</p></div>
-              <div><h4>O que fizemos</h4><p>Um sistema que coleta, organiza e interpreta os dados de geração, consumo e eficiência de cada fonte.</p></div>
-            </div>
+            <h3>A usina solar que avisa a hora certa de lavar as placas</h3>
+            <p>Compara o que cada setor da usina produz com o que deveria produzir naquele sol, calcula quanto a sujeira já está custando e avisa o melhor dia para limpar — esperando a chuva, se ela vier antes.</p>
+          </div>
+        </article>
+
+        <article class="case">
+          <p class="case-year">2024–hoje<small>Empresas</small></p>
+          <div>
+            <h3>Agentes de IA que executam tarefas sozinhos</h3>
+            <p>Entendem textos e imagens, consultam a base da empresa e executam fluxos de trabalho inteiros.</p>
+          </div>
+        </article>
+
+        <article class="case">
+          <p class="case-year">2023–24<small>Indústria</small></p>
+          <div>
+            <h3>Câmera que mede o desalinhamento de correias</h3>
+            <p>Uma rede neural acompanha a correia pela câmera e alerta antes do desgaste parar a produção.</p>
           </div>
         </article>
       </div>
@@ -1294,80 +1195,26 @@
     <section id="sobre">
       <div class="wrap">
         <div class="section-head">
-          <p class="section-label"><span>04</span>Por que a Conava</p>
-          <h2>Por que empresas <em>escolhem a Conava</em></h2>
+          <p class="section-label"><span>04</span>Quem somos</p>
+          <h2>Quem cuida <em>do seu projeto</em></h2>
         </div>
 
         <div class="about">
-          <ol class="reasons">
-            <li>
-              <h3>Sem “tecniquês”</h3>
-              <p>Você explica o problema do seu jeito e recebe respostas em português claro. Nada de termos que ninguém entende.</p>
-            </li>
-            <li>
-              <h3>Você vê funcionando antes de investir tudo</h3>
-              <p>Em poucas semanas entregamos uma primeira versão para você testar. Só seguimos se fizer sentido para o seu negócio.</p>
-            </li>
-            <li>
-              <h3>Sinceridade desde a primeira conversa</h3>
-              <p>Se a IA não for a melhor saída para o seu caso, dizemos. Preferimos perder um projeto a vender algo que não vai dar retorno.</p>
-            </li>
-            <li>
-              <h3>Não sumimos depois da entrega</h3>
-              <p>Acompanhamos a solução no dia a dia e ajustamos o que for preciso para ela continuar funcionando.</p>
-            </li>
-          </ol>
           <figure class="founder">
             <div class="portrait-frame">
               <img src="fotoperfil.jpg" alt="Foto de Lucas César de Arruda, fundador da Conava" width="280" height="280" loading="lazy" onerror="this.remove()" />
               <span aria-hidden="true">LA</span>
             </div>
-            <p class="founder-kicker">Quem cuida do seu projeto</p>
-            <h3>Lucas César de Arruda</h3>
-            <p class="founder-role">Fundador da Conava · Espírito Santo</p>
-            <ul>
-              <li>Engenharia de Controle e Automação</li>
-              <li>Ciência de Dados</li>
-              <li>Técnico em Mecatrônica</li>
-            </ul>
+            <figcaption>
+              <h3>Lucas César de Arruda</h3>
+              <p class="founder-role">Fundador da Conava · Espírito Santo</p>
+              <ul>
+                <li>Engenharia de Controle e Automação</li>
+                <li>Ciência de Dados</li>
+                <li>Técnico em Mecatrônica</li>
+              </ul>
+            </figcaption>
           </figure>
-        </div>
-      </div>
-    </section>
-
-    <section id="processo" class="projects-band">
-      <div class="wrap">
-        <div class="section-head">
-          <p class="section-label"><span>05</span>Como trabalhamos</p>
-          <h2>Simples, transparente e <em>sem surpresas</em></h2>
-        </div>
-
-        <ol class="steps">
-          <li class="step">
-            <span class="step-num">Primeiro</span>
-            <h3>Uma conversa</h3>
-            <p>Entendemos seu negócio, o problema e o que seria um bom resultado para você.</p>
-          </li>
-          <li class="step">
-            <span class="step-num">Depois</span>
-            <h3>Proposta por escrito</h3>
-            <p>Escopo, prazo e valor definidos, divididos em entregas.</p>
-          </li>
-          <li class="step">
-            <span class="step-num">Em poucas semanas</span>
-            <h3>Primeira versão</h3>
-            <p>Algo funcionando para você testar e validar antes de seguir.</p>
-          </li>
-          <li class="step">
-            <span class="step-num">No dia a dia</span>
-            <h3>Entrega e cuidado</h3>
-            <p>Colocamos para rodar e acompanhamos para que continue funcionando bem.</p>
-          </li>
-        </ol>
-
-        <div class="cta-inline">
-          <p>O primeiro passo é só uma conversa, sem compromisso.</p>
-          <a class="btn" href="#contato">Marcar a conversa</a>
         </div>
       </div>
     </section>
@@ -1375,34 +1222,26 @@
     <section id="duvidas">
       <div class="wrap">
         <div class="section-head">
-          <p class="section-label"><span>06</span>Dúvidas</p>
+          <p class="section-label"><span>05</span>Dúvidas</p>
           <h2>Perguntas comuns <em>antes de contratar</em></h2>
         </div>
 
         <div class="faq">
           <details>
-            <summary>Preciso entender de tecnologia para contratar?</summary>
-            <p>Não. Explicamos tudo em linguagem simples e cuidamos da parte técnica. Você só precisa conhecer bem o seu negócio.</p>
+            <summary>Preciso entender de tecnologia?</summary>
+            <p>Não. Você conhece o seu negócio; a parte técnica é com a gente.</p>
           </details>
           <details>
-            <summary>Minha empresa é pequena. Isso é para mim?</summary>
-            <p>Sim. Muitas das automações que mais economizam tempo são simples e cabem no orçamento de empresas pequenas. Na conversa inicial dizemos com sinceridade se vale a pena.</p>
+            <summary>Minha empresa é pequena. Vale a pena?</summary>
+            <p>Sim. Muitas automações são simples e cabem no orçamento. Se não valer, dizemos na primeira conversa.</p>
           </details>
           <details>
-            <summary>Quanto tempo leva para ficar pronto?</summary>
-            <p>Depende do tamanho do projeto. Uma primeira versão para teste costuma levar de 2 a 4 semanas; a solução completa, entre 6 e 12 semanas.</p>
-          </details>
-          <details>
-            <summary>Quanto custa?</summary>
-            <p>Cada projeto é diferente. Depois da conversa inicial, enviamos uma proposta por escrito com valor, prazo e etapas bem definidos.</p>
+            <summary>Quanto custa e quanto tempo leva?</summary>
+            <p>Depende do projeto. Após a conversa inicial você recebe uma proposta com valor e prazo. A primeira versão costuma sair em 2 a 4 semanas.</p>
           </details>
           <details>
             <summary>Os dados da minha empresa ficam seguros?</summary>
-            <p>Sim. Trabalhamos com controle de acesso, isolamento dos dados e boas práticas de segurança. Também podemos assinar um acordo de confidencialidade (NDA).</p>
-          </details>
-          <details>
-            <summary>Vocês atendem fora do Espírito Santo?</summary>
-            <p>Sim. A maior parte do trabalho é feita a distância, com reuniões por vídeo. Quando o projeto pede, combinamos visitas.</p>
+            <p>Sim. Usamos controle de acesso e boas práticas de segurança, e podemos assinar um acordo de confidencialidade.</p>
           </details>
         </div>
       </div>
@@ -1411,16 +1250,15 @@
     <section id="contato" class="contact">
       <div class="wrap">
         <div class="section-head">
-          <p class="section-label"><span>07</span>Contato</p>
+          <p class="section-label"><span>06</span>Contato</p>
           <h2>Quanto tempo sua equipe <em>poderia economizar?</em></h2>
         </div>
         <div class="contact-grid">
           <div>
-            <p class="contact-text">Conte em poucas linhas o que toma tempo na sua empresa. Respondemos com uma primeira ideia de solução — sem compromisso e sem termos técnicos.</p>
             <ol class="next-steps">
-              <li><span><b>Você nos conta</b> o que está tomando tempo ou dinheiro da sua empresa.</span></li>
-              <li><span><b>Respondemos em até 24 horas úteis</b> com perguntas ou uma primeira ideia.</span></li>
-              <li><span><b>Marcamos uma conversa</b> e, se fizer sentido, enviamos uma proposta por escrito.</span></li>
+              <li><span><b>Você nos conta</b> o que está tomando tempo.</span></li>
+              <li><span><b>Respondemos em até 24h</b> com uma primeira ideia.</span></li>
+              <li><span><b>Enviamos a proposta</b> se fizer sentido para você.</span></li>
             </ol>
             <div class="contact-actions">
               <a class="btn" href="https://wa.me/5527988966118?text=Ol%C3%A1!%20Vi%20o%20site%20da%20Conava%20e%20quero%20conversar%20sobre%20um%20projeto." target="_blank" rel="noopener noreferrer">Chamar no WhatsApp</a>
@@ -1445,7 +1283,7 @@
               <input id="f-empresa" name="empresa" type="text" autocomplete="organization" />
             </div>
             <div class="field">
-              <label for="f-msg">O que você precisa resolver? <span>(do seu jeito)</span></label>
+              <label for="f-msg">O que você precisa resolver?</label>
               <textarea id="f-msg" name="mensagem" placeholder="Ex.: todo mês sobra produto no estoque e falta o que mais vende." required></textarea>
             </div>
             <button type="submit">Enviar mensagem</button>
